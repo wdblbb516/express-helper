@@ -1,0 +1,46 @@
+# 微信开发者工具私有配置（包含敏感信息）
+project.private.config.json
+
+# 云函数依赖（每个云函数的 node_modules）
+cloudfunctions/**/node_modules/
+
+# 日志文件
+*.log
+logs/
+
+# 临时文件
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+
+# 敏感配置
+.env
+.env.local
+.env.*.local
+
+# 构建产物
+dist/
+build/
+target/
+**/target/
+*.jar
+*.war
+*.zip
+
+# Nacos 相关文件
+backend/nacos/nacos/data/
+backend/nacos/nacos/logs/
+backend/nacos/nacos/target/
+backend/nacos/nacos-server.zip
+
+# 编辑器目录
+.vscode/
+.idea/
+*.iml
+
+# 调试文件
+*.debug
+
+# 上传文件
+uploads/

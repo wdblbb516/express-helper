@@ -1,0 +1,274 @@
+.container {
+  min-height: 100vh;
+  background: #FFFFFF;
+  padding-bottom: 120rpx;
+}
+
+.header {
+  background: #FFFFFF;
+  padding: 30rpx;
+  display: flex;
+  align-items: center;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.back-btn {
+  width: 64rpx;
+  height: 64rpx;
+  background: #F5F5F5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
+.back-icon {
+  font-size: 36rpx;
+  color: #333333;
+}
+
+.header-title {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.task-list {
+  padding: 20rpx;
+}
+
+.task-card {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  border: 1rpx solid #F0F0F0;
+}
+
+.task-card.history {
+  opacity: 0.9;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.task-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.package-icon {
+  font-size: 36rpx;
+}
+
+.size-tag {
+  background: #F5F5F5;
+  color: #666666;
+  font-size: 24rpx;
+  font-weight: 600;
+  padding: 6rpx 16rpx;
+  border-radius: 10rpx;
+}
+
+.role-tag {
+  font-size: 22rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 10rpx;
+}
+
+.role-tag.publisher {
+  background: #FFFBEB;
+  color: #D97706;
+}
+
+.role-tag.receiver {
+  background: #F0FDF4;
+  color: #059669;
+}
+
+.task-right {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.reward {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #07C160;
+}
+
+.status-tag {
+  font-size: 22rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 16rpx;
+}
+
+.status-tag.pending {
+  background: #F0FDF4;
+  color: #07C160;
+}
+
+.status-tag.claimed {
+  background: #FEF2F2;
+  color: #DC2626;
+}
+
+.status-tag.pending_confirm {
+  background: #FFFBEB;
+  color: #D97706;
+}
+
+.status-tag.completed {
+  background: #F0FDF4;
+  color: #059669;
+}
+
+.task-body {
+  margin-bottom: 20rpx;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  font-size: 26rpx;
+  margin-right: 10rpx;
+}
+
+.info-text {
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.task-footer {
+  border-top: 1rpx solid #F5F5F5;
+  padding-top: 20rpx;
+}
+
+.claim-btn {
+  width: 100%;
+  background: #07C160;
+  border: none;
+  border-radius: 40rpx;
+  padding: 22rpx;
+}
+
+.claim-btn .btn-text {
+  color: #FFFFFF;
+  font-size: 30rpx;
+  font-weight: bold;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 40rpx;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  color: #E5E5E5;
+  margin-bottom: 24rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999999;
+}
+
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 560rpx;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 40rpx;
+  text-align: center;
+}
+
+.modal-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.modal-title {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 16rpx;
+}
+
+.modal-text {
+  font-size: 28rpx;
+  color: #666666;
+  margin-bottom: 32rpx;
+}
+
+.pickup-code {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #07C160;
+  font-family: monospace;
+  text-align: center;
+  margin-top: 32rpx;
+  margin-bottom: 32rpx;
+  display: block;
+}
+
+.modal-btn {
+  width: 100%;
+  background: #07C160;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 40rpx;
+  padding: 24rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.loading-more {
+  text-align: center;
+  padding: 20rpx;
+  color: #999999;
+  font-size: 26rpx;
+}
+
+.wechat-row {
+  justify-content: space-between;
+}
+
+.copy-btn {
+  padding: 8rpx 20rpx;
+  background: #07C160;
+  color: #FFFFFF;
+  font-size: 22rpx;
+  font-weight: bold;
+  border-radius: 20rpx;
+  border: none;
+}

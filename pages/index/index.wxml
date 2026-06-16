@@ -1,0 +1,143 @@
+<view class="container">
+  <view class="tabs-header">
+    <view 
+      class="tab-item {{activeTab === '国赛5号馆' ? 'active' : ''}}" 
+      bindtap="switchTab" 
+      data-tab="国赛5号馆"
+    >
+      <text class="tab-text">国赛5号馆</text>
+    </view>
+    <view 
+      class="tab-item {{activeTab === '阳光顺丰' ? 'active' : ''}}" 
+      bindtap="switchTab" 
+      data-tab="阳光顺丰"
+    >
+      <text class="tab-text">阳光顺丰</text>
+    </view>
+    <view 
+      class="tab-item {{activeTab === '小镇菜鸟驿站' ? 'active' : ''}}" 
+      bindtap="switchTab" 
+      data-tab="小镇菜鸟驿站"
+    >
+      <text class="tab-text">小镇菜鸟驿站</text>
+    </view>
+  </view>
+
+  <!-- 排序栏 -->
+  <view class="sort-bar">
+    <view class="sort-btn" bindtap="showSortMenu">
+      <text class="sort-text">{{sortLabel}}</text>
+      <text class="sort-arrow">▼</text>
+    </view>
+  </view>
+
+  <!-- 排序菜单 -->
+  <view wx:if="{{showSort}}" class="sort-menu-mask" bindtap="hideSortMenu">
+    <view class="sort-menu" catchtap>
+      <view 
+        class="sort-item {{sortType === 'time' ? 'active' : ''}}" 
+        bindtap="setSort" 
+        data-type="time"
+      >
+        <text>按发布时间排序</text>
+        <text wx:if="{{sortType === 'time'}}" class="check-icon">✓</text>
+      </view>
+      <view 
+        class="sort-item {{sortType === 'price' ? 'active' : ''}}" 
+        bindtap="setSort" 
+        data-type="price"
+      >
+        <text>按价格高低排序</text>
+        <text wx:if="{{sortType === 'price'}}" class="check-icon">✓</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{tasks.length === 0}}" class="empty-state">
+    <text class="empty-text">暂无待接单任务</text>
+  </view>
+
+  <scroll-view scroll-y class="task-list">
+    <view 
+      wx:for="{{tasks}}" 
+      wx:key="_id" 
+      class="task-card"
+    >
+      <view class="task-header">
+        <view class="size-tag">{{item.size || '未知'}}</view>
+        <view class="task-right">
+          <text class="reward">¥{{item.reward || 0}}</text>
+          <view class="status-tag">待接单</view>
+        </view>
+      </view>
+      
+      <view class="task-body">
+        <view class="info-row">
+          <text class="info-label">送达地址</text>
+          <text class="info-text">{{item.dormBuilding || item.dorm || '未填写'}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">发布时间</text>
+          <text class="info-text">{{item.relativeTime}}</text>
+        </view>
+      </view>
+
+      <view class="task-footer">
+        <button class="claim-btn" bindtap="showConfirmModal" data-id="{{item._id}}">
+          <text class="btn-text">接单</text>
+        </button>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="bottom-nav">
+    <view class="nav-item active" bindtap="goToHome">
+      <view class="nav-icon">
+        <view class="icon-home">
+          <view class="home-roof"></view>
+          <view class="home-body"></view>
+        </view>
+      </view>
+      <text class="nav-text">首页</text>
+    </view>
+    <view class="nav-item" bindtap="goToPublish">
+      <view class="nav-icon">
+        <view class="icon-pencil">
+          <view class="pencil-body"></view>
+          <view class="pencil-tip"></view>
+        </view>
+      </view>
+      <text class="nav-text">发布</text>
+    </view>
+    <view class="nav-item" bindtap="goToProfile">
+      <view class="nav-icon">
+        <view class="icon-user">
+          <view class="user-head"></view>
+          <view class="user-body"></view>
+        </view>
+      </view>
+      <text class="nav-text">我的</text>
+    </view>
+  </view>
+
+  <view wx:if="{{showModal}}" class="modal-mask" bindtap="closeModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <text class="modal-title">接单成功</text>
+      <text class="modal-text">取件码</text>
+      <text class="pickup-code">{{pickupCode}}</text>
+      <text class="modal-text">请尽快前往取件</text>
+      <button class="modal-btn" bindtap="closeModal">知道了</button>
+    </view>
+  </view>
+
+  <view wx:if="{{showConfirmModal}}" class="modal-mask" bindtap="cancelClaim">
+    <view class="modal-content confirm-modal" catchtap="stopPropagation">
+      <text class="modal-title">确认接单</text>
+      <text class="modal-text">确认接单后将显示取件码和联系方式</text>
+      <view class="modal-btn-group">
+        <button class="modal-btn cancel" bindtap="cancelClaim">取消</button>
+        <button class="modal-btn confirm" bindtap="confirmClaim">确认接单</button>
+      </view>
+    </view>
+  </view>
+</view>

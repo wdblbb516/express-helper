@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.orderservice.mapper.ReviewMapper">
+
+    <select id="selectByOrderIdAndReviewer" resultType="com.example.orderservice.entity.Review">
+        SELECT * FROM reviews WHERE order_id = #{orderId} AND reviewer_openid = #{reviewerOpenid}
+    </select>
+
+    <select id="selectByRevieweeOpenid" resultType="com.example.orderservice.entity.Review">
+        SELECT * FROM reviews WHERE reviewee_openid = #{revieweeOpenid} ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByReviewerOpenid" resultType="com.example.orderservice.entity.Review">
+        SELECT * FROM reviews WHERE reviewer_openid = #{reviewerOpenid} ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByOrderId" resultType="com.example.orderservice.entity.Review">
+        SELECT * FROM reviews WHERE order_id = #{orderId}
+    </select>
+
+</mapper>

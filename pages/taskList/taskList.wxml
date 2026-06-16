@@ -1,0 +1,85 @@
+<view class="container">
+  <view class="header">
+    <view class="back-btn" bindtap="goBack">
+      <text class="back-icon">‹</text>
+    </view>
+    <text class="header-title">{{expressPoint}}</text>
+  </view>
+
+  <view wx:if="{{tasks.length === 0}}" class="empty-state">
+    <text class="empty-icon">📭</text>
+    <text class="empty-text">暂无待接单任务</text>
+  </view>
+
+  <scroll-view 
+    scroll-y 
+    class="task-list"
+    bindscrolltolower="onLoadMore"
+    bindscrolltoupper="onPullDownRefresh"
+    :refresher-enabled="true"
+    :refresher-triggered="refreshing"
+    bindrefresherrefresh="onPullDownRefresh"
+  >
+    <view 
+      wx:for="{{tasks}}" 
+      wx:key="_id" 
+      class="task-card"
+    >
+      <view class="task-header">
+        <view class="task-left">
+          <text class="package-icon">📦</text>
+          <view class="size-tag">{{item.size || '未知'}}</view>
+        </view>
+        <view class="task-right">
+          <text class="reward">¥{{item.reward || 0}}</text>
+          <view class="status-tag">待接单</view>
+        </view>
+      </view>
+      
+      <view class="task-body">
+        <view class="info-row">
+          <text class="info-label">📍</text>
+          <text class="info-text">{{item.dormBuilding || item.dorm || '未填写'}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">🔐</text>
+          <text class="info-text">{{item.pickupCode || item.code || '未填写'}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">⏱️</text>
+          <text class="info-text">{{item.relativeTime}}</text>
+        </view>
+        <view wx:if="{{item.showWechat && item.wechat}}" class="info-row wechat-row">
+          <text class="info-label">💬</text>
+          <text class="info-text">{{item.wechat}}</text>
+          <button class="copy-btn" bindtap="copyWechat" data-wechat="{{item.wechat}}">复制</button>
+        </view>
+      </view>
+
+      <view class="task-footer">
+        <button class="claim-btn" bindtap="claimTask" data-id="{{item._id}}">
+          <text class="btn-text">接单</text>
+        </button>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="loading-more">
+      <text>加载中...</text>
+    </view>
+
+    <view wx:if="{{!loading && !hasMore && tasks.length > 0}}" class="loading-more">
+      <text>- 没有更多了 -</text>
+    </view>
+  </scroll-view>
+
+  <view wx:if="{{showModal}}" class="modal-mask" bindtap="closeModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <text class="modal-icon">🎉</text>
+      <text class="modal-title">接单成功</text>
+      <text class="modal-text">取件码</text>
+      <text class="pickup-code">{{pickupCode}}</text>
+      <text class="modal-text">请尽快前往取件</text>
+      <button class="modal-btn" bindtap="closeModal">知道了</button>
+    </view>
+  </view>
+</view>

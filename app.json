@@ -1,0 +1,18 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/index/index",
+    "pages/publish/publish",
+    "pages/taskList/taskList",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#07C160",
+    "navigationBarTitleText": "校园快递代取",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F9FAFB"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

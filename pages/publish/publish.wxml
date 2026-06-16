@@ -1,0 +1,116 @@
+<view class="container">
+  <view class="form-section">
+    <view class="form-item">
+      <text class="form-label">快递点</text>
+      <picker 
+        mode="selector" 
+        range="{{expressPoints}}" 
+        value="{{expressPointIndex}}"
+        bindchange="onExpressPointChange"
+      >
+        <view class="picker-trigger">
+          <text class="picker-text">{{expressPoints[expressPointIndex] || '请选择'}}</text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">包裹大小</text>
+      <picker 
+        mode="selector" 
+        range="{{packageSizes}}" 
+        value="{{sizeIndex}}"
+        bindchange="onSizeChange"
+      >
+        <view class="picker-trigger">
+          <text class="picker-text">{{packageSizes[sizeIndex] || '请选择'}}</text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">宿舍楼</text>
+      <picker 
+        mode="selector" 
+        range="{{dormArray}}" 
+        value="{{dormIndex}}"
+        bindchange="onDormChange"
+      >
+        <view class="picker-trigger">
+          <text class="picker-text">{{dormArray[dormIndex] || '请选择'}}</text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">悬赏金额</text>
+      <input 
+        type="digit" 
+        class="form-input" 
+        placeholder="请输入 1-10元"
+        value="{{reward}}"
+        bindinput="onRewardInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">取件码</text>
+      <input 
+        type="text" 
+        class="form-input" 
+        placeholder="请输入取件码"
+        value="{{pickupCode}}"
+        bindinput="onPickupCodeInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">显示微信号</text>
+      <view class="switch-container">
+        <switch 
+          checked="{{showWechat}}" 
+          bindchange="onShowWechatChange"
+          color="#07C160"
+          class="form-switch"
+        />
+      </view>
+      <text class="form-desc">开启后方便接单方联系您</text>
+    </view>
+  </view>
+
+  <view class="submit-btn" bindtap="submitTask">
+    <text class="submit-btn-text">发布任务</text>
+  </view>
+</view>
+
+<view class="bottom-nav">
+  <view class="nav-item" bindtap="goToHome">
+    <view class="nav-icon">
+      <view class="icon-home">
+        <view class="home-roof"></view>
+        <view class="home-body"></view>
+      </view>
+    </view>
+    <text class="nav-text">首页</text>
+  </view>
+  <view class="nav-item active" bindtap="goToPublish">
+    <view class="nav-icon">
+      <view class="icon-publish">
+        <view class="publish-arrow"></view>
+      </view>
+    </view>
+    <text class="nav-text">发布</text>
+  </view>
+  <view class="nav-item" bindtap="goToProfile">
+    <view class="nav-icon">
+      <view class="icon-user">
+        <view class="user-head"></view>
+        <view class="user-body"></view>
+      </view>
+    </view>
+    <text class="nav-text">我的</text>
+  </view>
+</view>

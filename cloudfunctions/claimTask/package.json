@@ -1,0 +1,14 @@
+{
+  "name": "claimTask",
+  "version": "1.0.0",
+  "description": "接单云函数（事务）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,557 @@
+<view class="container">
+  <view class="user-section">
+    <view class="user-header" bindtap="editProfile">
+      <view class="avatar">
+        <image wx:if="{{userInfo && userInfo.avatarUrl}}" class="avatar-img" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+        <text wx:else class="avatar-text">{{userInfo && userInfo.nickname && userInfo.nickname[0] ? userInfo.nickname[0] : '用'}}</text>
+      </view>
+      <view class="user-info">
+        <text class="nickname">{{userInfo && userInfo.nickname ? userInfo.nickname : '用户id_2'}}</text>
+        <text class="dorm">{{userInfo && userInfo.dormBuilding ? userInfo.dormBuilding : '未设置'}}</text>
+      </view>
+    </view>
+    
+    <view class="user-links">
+      <text class="link-item" bindtap="editProfile">编辑资料</text>
+      <text class="link-divider">|</text>
+      <text class="link-item" bindtap="logout">退出登录</text>
+      <text class="link-divider">|</text>
+      <text class="link-item" bindtap="showSwitchAccountModal">切换账号</text>
+    </view>
+    
+    <view class="stats-row">
+      <view class="stat-item {{activeTab === 'claimed' ? 'active' : ''}}" bindtap="switchTab" data-tab="claimed">
+        <text class="stat-num">{{claimedCount}}</text>
+        <text class="stat-name">我接单的</text>
+      </view>
+      <view class="stat-item {{activeTab === 'published' ? 'active' : ''}}" bindtap="switchTab" data-tab="published">
+        <text class="stat-num">{{publishedCount}}</text>
+        <text class="stat-name">我的发布</text>
+      </view>
+      <view class="stat-item {{activeTab === 'history' ? 'active' : ''}}" bindtap="switchTab" data-tab="history">
+        <text class="stat-num">{{historyCount}}</text>
+        <text class="stat-name">历史记录</text>
+      </view>
+      <view class="stat-item {{activeTab === 'reviews' ? 'active' : ''}}" bindtap="switchTab" data-tab="reviews">
+        <text class="stat-num">{{reviewsCount}}</text>
+        <text class="stat-name">评价</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 评价子标签 -->
+  <view wx:if="{{activeTab === 'reviews'}}" class="sub-tabs-card">
+    <view class="sub-tabs">
+      <view 
+        class="sub-tab-item {{reviewSubTab === 'reviewsForMe' ? 'active' : ''}}" 
+        bindtap="switchReviewSubTab" 
+        data-tab="reviewsForMe"
+      >
+        <text class="sub-tab-text">他人评价</text>
+      </view>
+      <view 
+        class="sub-tab-item {{reviewSubTab === 'myReviews' ? 'active' : ''}}" 
+        bindtap="switchReviewSubTab" 
+        data-tab="myReviews"
+      >
+        <text class="sub-tab-text">我的评价</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 接单任务子标签 -->
+  <view wx:if="{{activeTab === 'claimed'}}" class="sub-tabs-card">
+    <view class="sub-tabs">
+      <view 
+        class="sub-tab-item {{claimedSubTab === 'pending' ? 'active' : ''}}" 
+        bindtap="switchClaimedSubTab" 
+        data-tab="pending"
+      >
+        <text class="sub-tab-text">待送达</text>
+      </view>
+      <view 
+        class="sub-tab-item {{claimedSubTab === 'delivered' ? 'active' : ''}}" 
+        bindtap="switchClaimedSubTab" 
+        data-tab="delivered"
+      >
+        <text class="sub-tab-text">已送达</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 发布任务子标签 -->
+  <view wx:if="{{activeTab === 'published'}}" class="sub-tabs-card">
+    <view class="sub-tabs">
+      <view 
+        class="sub-tab-item {{publishedSubTab === 'pending' ? 'active' : ''}}" 
+        bindtap="switchPublishedSubTab" 
+        data-tab="pending"
+      >
+        <text class="sub-tab-text">待接单</text>
+      </view>
+      <view 
+        class="sub-tab-item {{publishedSubTab === 'claimed' ? 'active' : ''}}" 
+        bindtap="switchPublishedSubTab" 
+        data-tab="claimed"
+      >
+        <text class="sub-tab-text">已被接单</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="content-area">
+    <view wx:if="{{activeTab === 'claimed'}}" class="tab-content">
+      <view wx:if="{{claimedTasks.length === 0}}" class="empty-state">
+        <text class="empty-icon">📋</text>
+        <text class="empty-text">暂无接单任务</text>
+      </view>
+      <view wx:else>
+        <view wx:for="{{claimedTasks}}" wx:key="_id" class="task-card">
+          <view class="task-header">
+            <view class="task-left">
+              <text class="package-icon">📦</text>
+              <view class="size-tag">{{item.size || '未知'}}</view>
+            </view>
+            <view class="task-right">
+              <text class="reward">¥{{item.reward || 0}}</text>
+              <view class="status-tag {{item.status === 'claimed' ? 'pending' : (item.status === 'pending_confirm' ? 'pending_confirm' : 'completed')}}">
+                {{item.status === 'claimed' ? '待送达' : (item.status === 'pending_confirm' ? '等待确认' : '已完成')}}
+              </view>
+            </view>
+          </view>
+          <view class="task-body">
+            <view class="info-row">
+              <text class="info-text">{{item.expressPoint || item.location || '未填写'}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">送达地址</text>
+              <text class="info-text">{{item.dormBuilding || item.dorm || '未填写'}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">取件码</text>
+              <text class="info-text">{{item.pickupCode || item.code || '未填写'}}</text>
+            </view>
+            <view wx:if="{{(item.status === 'claimed' || item.showWechat) && item.wechat}}" class="info-row wechat-row">
+              <text class="info-label">对方微信号</text>
+              <text class="info-text">{{item.wechat}}</text>
+              <button class="copy-btn" bindtap="copyWechat" data-wechat="{{item.wechat}}">复制</button>
+            </view>
+            <view wx:if="{{item.status !== 'claimed'}}" class="delivery-photo-row">
+              <text class="info-text">送达照片:</text>
+              <image 
+                wx:if="{{item.deliveryPhoto}}"
+                class="delivery-photo" 
+                src="{{item.deliveryPhoto}}" 
+                mode="aspectFill"
+                bindtap="previewDeliveryPhoto"
+                data-photo="{{item.deliveryPhoto}}"
+              />
+              <view wx:else class="delivery-photo placeholder">
+                <text class="placeholder-text">暂无照片</text>
+              </view>
+            </view>
+          </view>
+          <view class="task-footer" wx:if="{{item.status === 'claimed'}}">
+            <button class="confirm-btn" bindtap="confirmDelivery" data-id="{{item._id}}">
+              <text class="btn-text">确认送达</text>
+            </button>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{activeTab === 'published'}}" class="tab-content">
+      <view wx:if="{{publishedTasks.length === 0}}" class="empty-state">
+        <text class="empty-icon">📝</text>
+        <text class="empty-text">暂无发布任务</text>
+      </view>
+      <view wx:else>
+        <view wx:for="{{publishedTasks}}" wx:key="_id" class="task-card">
+          <view class="task-header">
+            <view class="task-left">
+              <text class="package-icon">📦</text>
+              <view class="size-tag">{{item.size || '未知'}}</view>
+            </view>
+            <view class="task-right">
+              <text class="reward">¥{{item.reward || 0}}</text>
+              <view class="status-tag {{item.status === 'pending' ? 'pending' : (item.status === 'pending_confirm' ? 'pending_confirm' : 'claimed')}}">
+                {{item.status === 'pending' ? '待接单' : (item.status === 'pending_confirm' ? '待确认' : '已被接单')}}
+              </view>
+            </view>
+          </view>
+          <view class="task-body">
+            <view class="info-row">
+              <text class="info-text">{{item.expressPoint || item.location || '未填写'}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-text">{{item.dormBuilding || item.dorm || '未填写'}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-text">{{item.pickupCode || item.code || '未填写'}}</text>
+            </view>
+            <view class="info-row time-row">
+              <text class="info-label">发布时间</text>
+              <text class="info-text">{{item.relativeTime}}</text>
+            </view>
+            <view wx:if="{{item.status === 'claimed' && item.receiverOpenid}}" class="info-row receiver-row">
+              <text class="info-text">接单者:</text>
+              <text 
+                class="receiver-name" 
+                bindtap="showOtherUser" 
+                data-openid="{{item.receiverOpenid}}"
+              >点击查看</text>
+            </view>
+            <view class="delivery-photo-row">
+              <text class="info-text">送达照片:</text>
+              <image 
+                wx:if="{{item.deliveryPhoto}}"
+                class="delivery-photo" 
+                src="{{item.deliveryPhoto}}" 
+                mode="aspectFill"
+                bindtap="previewDeliveryPhoto"
+                data-photo="{{item.deliveryPhoto}}"
+              />
+              <view wx:else class="delivery-photo placeholder">
+                <text class="placeholder-text">暂无照片</text>
+              </view>
+            </view>
+          </view>
+          <view wx:if="{{item.status === 'pending'}}" class="task-footer">
+            <button class="cancel-btn" bindtap="cancelTask" data-id="{{item._id}}">
+              <text class="btn-text">取消发布</text>
+            </button>
+          </view>
+          <view wx:if="{{item.status === 'pending_confirm'}}" class="task-footer">
+            <button class="confirm-btn" bindtap="confirmReceipt" data-id="{{item._id}}">
+              <text class="btn-text">确认收货</text>
+            </button>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{activeTab === 'history'}}" class="tab-content">
+      <view wx:if="{{historyTasks.length === 0}}" class="empty-state">
+        <text class="empty-icon">📜</text>
+        <text class="empty-text">暂无历史记录</text>
+      </view>
+      <view wx:else>
+        <view wx:for="{{historyTasks}}" wx:key="_id" class="task-card history">
+          <view class="task-header">
+            <view class="task-left">
+              <text class="package-icon">{{item.isPublisher ? '📝' : '📦'}}</text>
+              <view class="size-tag">{{item.size || '未知'}}</view>
+              <view class="role-tag {{item.isPublisher ? 'publisher' : 'receiver'}}">
+                {{item.isPublisher ? '我发布的' : '我接单的'}}
+              </view>
+            </view>
+            <view class="task-right">
+              <text class="reward">¥{{item.reward || 0}}</text>
+              <view class="status-tag completed">已完成</view>
+            </view>
+          </view>
+          <view class="task-body">
+            <view class="info-row">
+              <text class="info-text">{{item.expressPoint || '未填写'}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-text">{{item.dormBuilding || '未填写'}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-text">{{item.isPublisher ? '对方' : '发布者'}}:</text>
+              <text class="receiver-name" bindtap="showOtherUser" data-openid="{{item.isPublisher ? item.receiverOpenid : item.openid}}">点击查看对方的历史评价</text>
+            </view>
+            <view class="delivery-photo-row">
+              <text class="info-text">送达照片:</text>
+              <image 
+                wx:if="{{item.deliveryPhoto}}"
+                class="delivery-photo" 
+                src="{{item.deliveryPhoto}}" 
+                mode="aspectFill"
+                bindtap="previewDeliveryPhoto"
+                data-photo="{{item.deliveryPhoto}}"
+              />
+              <view wx:else class="delivery-photo placeholder">
+                <text class="placeholder-text">暂无照片</text>
+              </view>
+            </view>
+            <view class="info-row">
+              <text class="info-text">{{item.relativeTime}}</text>
+            </view>
+          </view>
+          <view class="task-footer">
+            <button wx:if="{{!item.reviewed}}" class="confirm-btn" bindtap="showReviewModal" data-id="{{item._id}}" data-role="{{item.isPublisher ? 'publisher' : 'receiver'}}">
+              <text class="btn-text">去评价</text>
+            </button>
+            <view wx:else class="reviewed-tag">
+              <text>✅ 已评价</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{activeTab === 'reviews' && reviewSubTab === 'reviewsForMe'}}" class="tab-content">
+      <view wx:if="{{reviewsForMe.length === 0}}" class="empty-state">
+        <text class="empty-icon">⭐</text>
+        <text class="empty-text">暂无他人评价</text>
+      </view>
+      <view wx:else>
+        <view wx:for="{{reviewsForMe}}" wx:key="_id" class="review-card">
+          <view class="review-header">
+            <view class="reviewer-info">
+              <view class="reviewer-avatar">
+                <image wx:if="{{item.fromAvatarUrl}}" class="avatar-img" src="{{item.fromAvatarUrl}}" mode="aspectFill" />
+                <text wx:else class="avatar-text">{{item.fromNickname && item.fromNickname[0] ? item.fromNickname[0] : '?'}}</text>
+              </view>
+              <view class="reviewer-detail">
+                <text class="reviewer-name">{{item.fromNickname}}</text>
+                <text class="review-time">{{item.relativeTime}}</text>
+              </view>
+            </view>
+            <view class="review-rating">
+              <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" wx:for-item="star" class="star {{item.rating >= star ? 'active' : ''}}">★</text>
+            </view>
+          </view>
+          <view class="review-dimensions">
+            <view class="dim-tag">沟通: {{item.communication}}星</view>
+            <view class="dim-tag">速度: {{item.speed}}星</view>
+            <view class="dim-tag">细心: {{item.carefulness}}星</view>
+          </view>
+          <view wx:if="{{item.comment}}" class="review-comment">
+            <text>{{item.comment}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{activeTab === 'reviews' && reviewSubTab === 'myReviews'}}" class="tab-content">
+      <view wx:if="{{myReviews.length === 0}}" class="empty-state">
+        <text class="empty-icon">📝</text>
+        <text class="empty-text">暂无评价记录</text>
+      </view>
+      <view wx:else>
+        <view wx:for="{{myReviews}}" wx:key="_id" class="review-card">
+          <view class="review-header">
+            <view class="reviewer-info">
+              <view class="reviewer-avatar">
+                <text>我</text>
+              </view>
+              <view class="reviewer-detail">
+                <text class="reviewer-name">我评价的</text>
+                <text class="review-time">{{item.relativeTime}}</text>
+              </view>
+            </view>
+            <view class="review-rating">
+              <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" wx:for-item="star" class="star {{item.rating >= star ? 'active' : ''}}">★</text>
+            </view>
+          </view>
+          <view class="review-dimensions">
+            <view class="dim-tag">沟通: {{item.communication}}星</view>
+            <view class="dim-tag">速度: {{item.speed}}星</view>
+            <view class="dim-tag">细心: {{item.carefulness}}星</view>
+          </view>
+          <view wx:if="{{item.comment}}" class="review-comment">
+            <text>{{item.comment}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="bottom-nav">
+  <view class="nav-item" bindtap="goToHome">
+    <view class="nav-icon">
+      <view class="icon-home">
+        <view class="home-roof"></view>
+        <view class="home-body"></view>
+      </view>
+    </view>
+    <text class="nav-text">首页</text>
+  </view>
+  <view class="nav-item" bindtap="goToPublish">
+    <view class="nav-icon">
+      <view class="icon-pencil">
+        <view class="pencil-body"></view>
+        <view class="pencil-tip"></view>
+      </view>
+    </view>
+    <text class="nav-text">发布</text>
+  </view>
+  <view class="nav-item active" bindtap="goToProfile">
+    <view class="nav-icon">
+      <view class="icon-user">
+        <view class="user-head"></view>
+        <view class="user-body"></view>
+      </view>
+    </view>
+    <text class="nav-text">我的</text>
+  </view>
+</view>
+
+<view wx:if="{{showEditModal}}" class="modal-mask" bindtap="closeEditModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <text class="modal-title">编辑资料</text>
+    <view class="form-item avatar-item">
+      <text class="form-label">头像</text>
+      <view class="avatar-upload" bindtap="chooseAvatar">
+        <image wx:if="{{editForm.avatarUrl}}" class="avatar-img" src="{{editForm.avatarUrl}}" mode="aspectFill" />
+        <text wx:else class="avatar-text">{{editForm.nickname && editForm.nickname[0] ? editForm.nickname[0] : '头'}}</text>
+        <view class="upload-icon">+</view>
+      </view>
+    </view>
+    <view class="form-item">
+      <text class="form-label">昵称</text>
+      <input 
+        type="text" 
+        class="form-input" 
+        placeholder="请输入昵称"
+        value="{{editForm.nickname}}"
+        bindinput="onNicknameInput"
+      />
+    </view>
+    <view class="form-item">
+      <text class="form-label">宿舍楼</text>
+      <input 
+        type="text" 
+        class="form-input" 
+        placeholder="请输入宿舍楼"
+        value="{{editForm.dormBuilding}}"
+        bindinput="onDormInput"
+      />
+    </view>
+    <view class="form-item">
+      <text class="form-label">我的微信号</text>
+      <input 
+        type="text" 
+        class="form-input" 
+        placeholder="请输入微信号（用于他人联系）"
+        value="{{editForm.wechat}}"
+        bindinput="onWechatInput"
+      />
+    </view>
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="closeEditModal">取消</button>
+      <button class="modal-btn confirm" bindtap="saveProfile">保存</button>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{showOtherUserModal}}" class="modal-mask" bindtap="closeOtherUserModal">
+  <view class="modal-content other-user-modal" catchtap="stopPropagation">
+    <view class="other-user-header">
+      <view class="other-user-avatar">
+        <text>{{otherUserInfo.nicknameFirst}}</text>
+      </view>
+      <view class="other-user-info">
+        <text class="other-user-nickname">{{otherUserInfo.nickname}}</text>
+        <text class="other-user-dorm">{{otherUserInfo.dormBuilding}}</text>
+      </view>
+    </view>
+    
+    <view class="other-user-reviews">
+      <text class="reviews-title">历史评价</text>
+      <view wx:if="{{otherUserReviews.length === 0}}" class="empty-state small">
+        <text class="empty-icon">⭐</text>
+        <text class="empty-text">暂无评价</text>
+      </view>
+      <view wx:else>
+        <view wx:for="{{otherUserReviews}}" wx:key="_id" wx:for-item="review" class="review-item">
+          <view class="review-stars">
+            <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" wx:for-item="star" class="star {{review.rating >= star ? 'active' : ''}}">★</text>
+          </view>
+          <view wx:if="{{review.comment}}" class="review-text">
+            <text>{{review.comment}}</text>
+          </view>
+          <text class="review-time">{{review.relativeTime}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="modal-actions">
+      <button class="modal-btn confirm" bindtap="closeOtherUserModal">关闭</button>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{showReviewModal}}" class="modal-mask" bindtap="closeReviewModal">
+  <view class="modal-content review-modal" catchtap="stopPropagation">
+    <text class="modal-title">评价对方</text>
+    <view class="rating-section">
+      <text class="rating-label">总体评分</text>
+      <view 
+        class="star-rating-container"
+        bindtouchstart="onRatingTouchStart"
+        bindtouchmove="onRatingTouchMove"
+        bindtouchend="onRatingTouchEnd"
+      >
+        <view class="star-rating">
+          <text 
+            wx:for="{{[1,2,3,4,5]}}" 
+            wx:key="*this" 
+            class="star {{reviewData.rating >= item ? 'active' : ''}}"
+            bindtap="setRating"
+            data-rating="{{item}}"
+          >★</text>
+        </view>
+      </view>
+      <text class="rating-hint">← 滑动选择星级 →</text>
+    </view>
+    <view class="dimensions-section">
+      <text class="rating-label">分项评分</text>
+      <view class="dimension-item">
+        <text class="dimension-name">沟通态度</text>
+        <view class="star-rating small">
+          <text 
+            wx:for="{{[1,2,3,4,5]}}" 
+            wx:key="*this" 
+            class="star {{reviewData.dimensions.communication >= item ? 'active' : ''}}"
+            bindtap="setDimension"
+            data-dimension="communication"
+            data-value="{{item}}"
+          >★</text>
+        </view>
+      </view>
+      <view class="dimension-item">
+        <text class="dimension-name">配送速度</text>
+        <view class="star-rating small">
+          <text 
+            wx:for="{{[1,2,3,4,5]}}" 
+            wx:key="*this" 
+            class="star {{reviewData.dimensions.speed >= item ? 'active' : ''}}"
+            bindtap="setDimension"
+            data-dimension="speed"
+            data-value="{{item}}"
+          >★</text>
+        </view>
+      </view>
+      <view class="dimension-item">
+        <text class="dimension-name">服务细心</text>
+        <view class="star-rating small">
+          <text 
+            wx:for="{{[1,2,3,4,5]}}" 
+            wx:key="*this" 
+            class="star {{reviewData.dimensions.carefulness >= item ? 'active' : ''}}"
+            bindtap="setDimension"
+            data-dimension="carefulness"
+            data-value="{{item}}"
+          >★</text>
+        </view>
+      </view>
+    </view>
+    <view class="form-item">
+      <text class="form-label">评价内容</text>
+      <textarea 
+        class="form-input review-textarea" 
+        placeholder="请输入评价内容（可选）"
+        value="{{reviewData.comment}}"
+        bindinput="onReviewCommentInput"
+      />
+    </view>
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="closeReviewModal">取消</button>
+      <button class="modal-btn confirm" bindtap="submitReview">提交评价</button>
+    </view>
+  </view>
+</view>

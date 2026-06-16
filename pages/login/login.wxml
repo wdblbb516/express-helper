@@ -1,0 +1,80 @@
+<view class="login-container">
+  <!-- 第一步：初始登录页面 -->
+  <view wx:if="{{!showEditForm}}" class="step-one">
+    <!-- Logo 区域 -->
+    <view class="logo-section">
+      <view class="logo-wrapper">
+        <view class="avatar-container">
+          <text class="avatar-icon">👤</text>
+        </view>
+      </view>
+      <text class="app-title">用户端</text>
+    </view>
+
+    <!-- 按钮区域 -->
+    <view class="button-section">
+      <button class="btn-outline" bindtap="handleLoginRegister">
+        <text class="btn-text">登录/注册</text>
+      </button>
+      <button class="btn-primary" bindtap="handleWechatLogin" loading="{{isLoading}}">
+        <text class="btn-text-white">{{isLoading ? '登录中...' : '微信登录'}}</text>
+      </button>
+    </view>
+
+    <!-- 隐私协议区域 -->
+    <view class="privacy-section">
+      <view class="checkbox-wrapper" bindtap="toggleAgree">
+        <view class="checkbox {{isAgreed ? 'checked' : ''}}">
+          <text wx:if="{{isAgreed}}" class="check-icon">✓</text>
+        </view>
+        <text class="privacy-text">已阅读并同意</text>
+        <text class="privacy-link">《用户服务协议》</text>
+        <text class="privacy-text">和</text>
+        <text class="privacy-link">《隐私政策》</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 第二步：编辑用户信息 -->
+  <view wx:else class="step-two">
+    <!-- 返回按钮 -->
+    <view class="back-btn" bindtap="goBack">
+      <text class="back-icon">←</text>
+      <text class="back-text">返回</text>
+    </view>
+
+    <!-- 用户信息编辑区域 -->
+    <view class="edit-section">
+      <view class="section-title">完善信息</view>
+      
+      <!-- 头像选择 -->
+      <view class="form-item">
+        <text class="form-label">头像</text>
+        <view class="avatar-upload" bindtap="chooseAvatar">
+          <image wx:if="{{avatarUrl}}" class="uploaded-avatar" src="{{avatarUrl}}" mode="aspectFill" />
+          <view wx:else class="upload-placeholder">
+            <text class="upload-icon">📷</text>
+            <text class="upload-text">选择头像</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 昵称输入 -->
+      <view class="form-item">
+        <text class="form-label">昵称</text>
+        <input 
+          class="form-input" 
+          placeholder="请输入昵称" 
+          value="{{nickname}}" 
+          bindinput="onNicknameInput"
+          maxlength="20"
+        />
+      </view>
+
+      <!-- 提交按钮 -->
+      <button class="btn-primary submit-btn" bindtap="submitLogin" loading="{{isLoading}}">
+        <text class="btn-text-white">{{isLoading ? '提交中...' : '完成登录'}}</text>
+      </button>
+    </view>
+  </view>
+</view>

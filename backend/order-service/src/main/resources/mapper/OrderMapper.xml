@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.orderservice.mapper.OrderMapper">
+
+    <select id="selectPendingOrders" resultType="com.example.orderservice.entity.Order">
+        SELECT * FROM orders WHERE status = 'pending' ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByPublisherOpenid" resultType="com.example.orderservice.entity.Order">
+        SELECT * FROM orders WHERE publisher_openid = #{openid} ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByReceiverOpenid" resultType="com.example.orderservice.entity.Order">
+        SELECT * FROM orders WHERE receiver_openid = #{openid} ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByOrderNo" resultType="com.example.orderservice.entity.Order">
+        SELECT * FROM orders WHERE order_no = #{orderNo}
+    </select>
+
+</mapper>

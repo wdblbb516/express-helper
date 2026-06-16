@@ -1,0 +1,44 @@
+package com.example.orderservice.entity;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.time.LocalDateTime;
+
+@TableName("reviews")
+public class Review {
+
+    @TableId(type = IdType.AUTO)
+    private Long id;
+    private Long orderId;
+    private String reviewerOpenid;
+    private String revieweeOpenid;
+    private Integer rating;
+    private Integer communication;
+    private Integer speed;
+    private Integer careful;
+    private String comment;
+    private LocalDateTime createTime;
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public Long getOrderId() { return orderId; }
+    public void setOrderId(Long orderId) { this.orderId = orderId; }
+    public String getReviewerOpenid() { return reviewerOpenid; }
+    public void setReviewerOpenid(String reviewerOpenid) { this.reviewerOpenid = reviewerOpenid; }
+    public String getRevieweeOpenid() { return revieweeOpenid; }
+    public void setRevieweeOpenid(String revieweeOpenid) { this.revieweeOpenid = revieweeOpenid; }
+    public Integer getRating() { return rating; }
+    public void setRating(Integer rating) { this.rating = rating; }
+    public Integer getCommunication() { return communication; }
+    public void setCommunication(Integer communication) { this.communication = communication; }
+    public Integer getSpeed() { return speed; }
+    public void setSpeed(Integer speed) { this.speed = speed; }
+    public Integer getCareful() { return careful; }
+    public void setCareful(Integer careful) { this.careful = careful; }
+    public String getComment() { return comment; }
+    public void setComment(String comment) { this.comment = comment; }
+    public LocalDateTime getCreateTime() { return createTime; }
+    public void setCreateTime(LocalDateTime createTime) { this.createTime = createTime; }
+}
